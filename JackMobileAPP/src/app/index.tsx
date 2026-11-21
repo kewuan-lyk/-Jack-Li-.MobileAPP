@@ -97,7 +97,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'right', 'bottom', 'left']}>
       <View style={styles.screen}>
         <View style={styles.header}>
           <View>
@@ -146,7 +146,12 @@ export default function HomeScreen() {
         <View style={styles.historyHeader}>
           <Text style={styles.sectionTitle}>Drink History</Text>
           {logs.length > 0 && (
-            <Pressable onPress={confirmClear} hitSlop={12}>
+            <Pressable
+              accessibilityLabel="Clear all drink history"
+              accessibilityRole="button"
+              hitSlop={12}
+              onPress={confirmClear}
+              style={({ pressed }) => pressed && styles.textPressed}>
               <Text style={styles.clearText}>Clear All</Text>
             </Pressable>
           )}
@@ -183,9 +188,11 @@ export default function HomeScreen() {
                 <Text style={styles.logMg}>{item.caffeineMg} mg</Text>
                 <Pressable
                   accessibilityLabel={`Delete ${item.name}`}
-                  hitSlop={10}
+                  accessibilityRole="button"
+                  android_ripple={{ color: '#F3C8C2', borderless: true, radius: 22 }}
+                  hitSlop={8}
                   onPress={() => void removeLog(item.id)}
-                  style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
+                  style={({ pressed }) => [styles.deleteButton, pressed && styles.buttonPressed]}>
                   <Text style={styles.deleteText}>✕</Text>
                 </Pressable>
               </View>
@@ -204,8 +211,10 @@ export default function HomeScreen() {
 
         <View style={styles.bottomBar}>
           <Pressable
+            accessibilityRole="button"
+            android_ripple={{ color: 'rgba(255, 255, 255, 0.16)' }}
             onPress={() => router.push('/add')}
-            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+            style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}>
             <Text style={styles.primaryButtonText}>+  Log Caffeine</Text>
           </Pressable>
         </View>
@@ -297,6 +306,11 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderColor: colors.border,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.045,
+    shadowRadius: 5,
+    elevation: 1,
   },
   logIcon: {
     width: 40,
@@ -312,19 +326,20 @@ const styles = StyleSheet.create({
   logTime: { color: colors.muted, fontSize: 12, marginTop: 3 },
   logMg: { color: colors.primary, fontSize: 14, fontWeight: '800', marginRight: 12 },
   deleteButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: '#F9EFED',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   deleteText: { color: colors.warning, fontSize: 13, fontWeight: '800' },
   emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 36 },
   emptyIcon: { fontSize: 38, opacity: 0.6, marginBottom: 10 },
   emptyTitle: { color: colors.primary, fontSize: 17, fontWeight: '800' },
   emptyText: { color: colors.muted, fontSize: 13, textAlign: 'center', marginTop: 5 },
-  bottomBar: { paddingTop: 12, paddingBottom: 14 },
+  bottomBar: { paddingTop: 12, paddingBottom: 6 },
   primaryButton: {
     height: 56,
     borderRadius: 16,
@@ -336,7 +351,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 10,
     elevation: 4,
+    overflow: 'hidden',
   },
   primaryButtonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '800' },
-  pressed: { opacity: 0.72 },
+  buttonPressed: { opacity: 0.76, transform: [{ scale: 0.985 }] },
+  textPressed: { opacity: 0.55 },
 });

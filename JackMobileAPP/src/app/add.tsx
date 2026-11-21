@@ -82,10 +82,11 @@ export default function AddCaffeineScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'bottom']}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}>
         <ScrollView
           contentContainerStyle={styles.content}
+          keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View style={styles.intro}>
@@ -100,12 +101,15 @@ export default function AddCaffeineScreen() {
                 name === preset.name && caffeineAmount === String(preset.caffeineMg);
               return (
                 <Pressable
+                  accessibilityLabel={`${preset.name}, ${preset.caffeineMg} milligrams`}
+                  accessibilityRole="button"
+                  android_ripple={{ color: '#F2DDC0' }}
                   key={preset.name}
                   onPress={() => selectPreset(preset)}
                   style={({ pressed }) => [
                     styles.presetCard,
                     selected && styles.presetSelected,
-                    pressed && styles.pressed,
+                    pressed && styles.buttonPressed,
                   ]}>
                   <Text style={styles.presetIcon}>{preset.icon}</Text>
                   <Text style={styles.presetName}>{preset.name}</Text>
@@ -168,11 +172,14 @@ export default function AddCaffeineScreen() {
 
         <View style={styles.bottomBar}>
           <Pressable
+            accessibilityRole="button"
+            android_ripple={{ color: 'rgba(255, 255, 255, 0.16)' }}
             disabled={saving}
             onPress={() => void save()}
             style={({ pressed }) => [
               styles.saveButton,
-              (pressed || saving) && styles.pressed,
+              pressed && styles.buttonPressed,
+              saving && styles.disabled,
             ]}>
             <Text style={styles.saveButtonText}>{saving ? 'Saving…' : 'Save Drink'}</Text>
           </Pressable>
@@ -205,6 +212,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1.5,
     borderColor: colors.border,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 5,
+    elevation: 1,
+    overflow: 'hidden',
   },
   presetSelected: { borderColor: colors.amber, backgroundColor: '#FFF8EC' },
   presetIcon: { fontSize: 25, marginBottom: 11 },
@@ -217,6 +230,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 7,
+    elevation: 2,
   },
   formTitle: { color: colors.primary, fontSize: 18, fontWeight: '800', marginBottom: 18 },
   inputLabel: { color: colors.text, fontSize: 13, fontWeight: '700', marginBottom: 7 },
@@ -267,7 +285,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   saveButtonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '800' },
-  pressed: { opacity: 0.7 },
+  buttonPressed: { opacity: 0.76, transform: [{ scale: 0.985 }] },
+  disabled: { opacity: 0.55 },
 });
