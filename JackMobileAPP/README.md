@@ -1,56 +1,64 @@
-# Welcome to your Expo app 👋
+# Caffeine Meter
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Caffeine Meter is a two-screen, offline-first Expo app for logging caffeinated drinks, estimating active caffeine with a five-hour half-life, and showing how long it may take to fall below a 50 mg sleep-safe threshold.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Home dashboard with active caffeine, sleep-safe estimate, and a 400 mg daily progress bar
+- Add screen with four quick presets and a custom drink form
+- Input validation, individual deletion, and confirmed Clear All
+- Persistent local history through AsyncStorage
+- No account, backend, paid service, or third-party API
+
+## Privacy and security
+
+Drink names, caffeine amounts, and timestamps stay in the app's local AsyncStorage. The app does not request credentials, health records, contacts, location, camera, or microphone access, and it sends no analytics or tracking data. AsyncStorage is intentionally used only for this non-sensitive log data and should not be used for passwords, tokens, or other secrets.
+
+`npm audit --omit=dev` currently reports the moderate `GHSA-g3hv-75wg-m249` advisory through Expo 58's build-time `@expo/fingerprint → minimatch@10.2.6` dependency. The affected glob API is not exposed to drink-name input or used in the shipped app's data flow. npm's automatic fix would downgrade Expo to SDK 52, so it is intentionally not applied; update to a future compatible Expo 58 patch when Expo publishes the repaired dependency chain.
+
+## Run with Expo Go
+
+1. Install the free Expo Go app on an iOS or Android device.
+2. From this directory, install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Start the local development server:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Keep the computer and phone on the same network, then scan the QR code with Expo Go. If LAN discovery is unavailable, try:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   npx expo start --tunnel
+   ```
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+The tunnel option uses Expo's development service but does not require a paid Expo plan.
 
-## Get a fresh project
+## Run in a simulator
 
-When you're ready, run:
+Start Expo with `npx expo start`, then press `i` for an installed iOS Simulator or `a` for an installed Android emulator.
+
+## Validation
 
 ```bash
-npm run reset-project
+npx eslint .
+npx tsc --noEmit
+npx expo-doctor
+npx expo export --platform ios
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+## Suggested demo recording
 
-### Other setup steps
+1. Open the Home screen and show the empty state.
+2. Navigate to Log Caffeine.
+3. Tap Americano and show the `Americano` / `95` auto-filled inputs.
+4. Save and show the updated active caffeine, daily total, and history.
+5. Force-close and reopen Expo Go to demonstrate persistence.
+6. Delete one item, then demonstrate the Clear All confirmation with additional test entries.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The implementation follows the project-level `SPEC.md`. The independent implementation review is recorded in `REVIEW.md`.
